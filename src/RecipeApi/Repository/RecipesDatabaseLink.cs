@@ -88,7 +88,9 @@ namespace RecipesApi.Repository
                             if (!(rd["Notes"] is DBNull))
                                 newRecipe.Notes = rd["Notes"].ToString();
 
-                            using (SqlCommand cmd2 = new SqlCommand("Select * from RecipeIngredients where RecipeID = '" + newRecipe.RecipeID + "'", con))
+                            rd.Dispose();
+
+                            using (SqlCommand cmd2 = new SqlCommand("Select * from RecipeIngredients where RecipeID = " + newRecipe.RecipeID, con))
                             {
                                 SqlDataReader rd2 = cmd2.ExecuteReader();
                                 if (rd2.HasRows)
@@ -103,9 +105,10 @@ namespace RecipesApi.Repository
                                     newIng.OtherNotes = rd2["Notes"].ToString();
                                     newRecipe.RecipeIngredients.Add(newIng);
                                 }
+                                rd2.Dispose();
                             }
                         }
-                        rd.Dispose();
+
                     }
                 }
             }
